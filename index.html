@@ -3337,11 +3337,10 @@ new MutationObserver(sync).observe(counter,{childList:true,characterData:true,su
  const openButton=document.getElementById('daveWelcomeOpen');
  const saveButton=document.getElementById('daveWelcomeSave');
  if(!welcome||!openButton||!saveButton)return;
- // When the catalogue is opened from its already-installed home-screen icon,
- // go directly to the pages rather than showing the marketing welcome again.
- const installed=window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
- const deepLink=/#page=\d/i.test(location.hash);
- if(installed||deepLink)welcome.hidden=true;
+ // Keep the OPEN / SAVE welcome visible on every launch, including home-screen
+ // icons, installed PWAs, and links containing a page hash. Do not auto-dismiss.
+ // Only the two explicit customer button actions below may close this screen.
+ welcome.hidden=false;
  function dismiss(){welcome.hidden=true;}
  openButton.addEventListener('click',function(){dismiss();});
  saveButton.addEventListener('click',function(){
