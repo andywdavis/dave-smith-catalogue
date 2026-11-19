@@ -1310,7 +1310,8 @@ stage.addEventListener('touchend',e=>{
 },{passive:true});
 stage.addEventListener('touchcancel',()=>{gesture=pinch=null},{passive:true});
 stage.addEventListener('dblclick',e=>{if(current===49){e.preventDefault();return;}zoomTo(zoom>1?1:2)});
-try{fast(localStorage.getItem('rjRollTurnFast')==='1')}catch(e){fast(false)}
+/* Start the saved home-screen app in rolling-book mode even when an old instant-turn preference remains. The page scrubber still jumps instantly. */
+fast(false)
 
 $('scrub').step='any';$('jump').step='any';
 const init=Number(location.hash.match(/page=(\d+(?:\.\d+)?)/)?.[1]);
