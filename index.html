@@ -4480,11 +4480,11 @@ function hideAfterChoice(){if($('rj-fam-nudge'))$('rj-fam-nudge').hidden=true;ma
 function buildInvite(){
   if($('rj-fam-nudge'))return;
   const nudge=el('aside');nudge.id='rj-fam-nudge';nudge.hidden=true;nudge.setAttribute('aria-label','Optional Lancashire & Yorkshire Family invitation');
-  const title=el('strong','',"JOIN MAX'S LANCASHIRE & YORKSHIRE FAMILY!");const desc=el('p','',"Be first to hear about my latest R&J trade deals. Just your name and mobile!");
+  const title=el('strong','',"JOIN DAVE'S LANCASHIRE & YORKSHIRE FAMILY!");const desc=el('p','',"Be first to hear about my latest R&J trade deals. Just your name and mobile!");
   const actions=el('div','rj-fam-actions');const yes=el('button','rj-fam-yes','YES, COUNT ME IN');const no=el('button','rj-fam-no','NO THANKS');
   yes.type=no.type='button';actions.append(yes,no);nudge.append(title,desc,actions);
   const dialog=el('div');dialog.id='rj-fam-dialog';dialog.hidden=true;dialog.setAttribute('role','dialog');dialog.setAttribute('aria-modal','true');dialog.setAttribute('aria-labelledby','rj-fam-title');
-  const card=el('section','rj-fam-card'),heading=el('h2','',"JOIN MAX'S LANCASHIRE & YORKSHIRE FAMILY!");heading.id='rj-fam-title';
+  const card=el('section','rj-fam-card'),heading=el('h2','',"JOIN DAVE'S LANCASHIRE & YORKSHIRE FAMILY!");heading.id='rj-fam-title';
   const intro=el('p','rj-fam-intro','Occasional R&J trade offers and new catalogue deals. No fuss. No spam.');
   const form=el('form');form.id='rj-fam-form';const lname=el('label','',"Your name"),lphone=el('label','',"Mobile number");lname.htmlFor='rj-fam-name';lphone.htmlFor='rj-fam-phone';
   const name=el('input');name.id='rj-fam-name';name.type='text';name.name='name';name.maxLength=70;name.autocomplete='name';name.placeholder='Your name';name.required=true;
@@ -4558,7 +4558,7 @@ function start(){
       const n=$('rj-fam-nudge');const dlg=$('rj-fam-dialog');
       if(status().kind==='joined')return;
       // The footer is always available for someone who changes their mind.
-      n.querySelector('strong').textContent="JOIN MAX'S LANCASHIRE & YORKSHIRE FAMILY!";
+      n.querySelector('strong').textContent="JOIN DAVE'S LANCASHIRE & YORKSHIRE FAMILY!";
       n.querySelector('p').textContent='Be first to hear about my latest R&J trade deals. Just your name and mobile!';
       n.querySelector('.rj-fam-yes').textContent='YES, COUNT ME IN';
       const yes=n.querySelector('.rj-fam-yes');yes.onclick=null;
@@ -4897,6 +4897,42 @@ html.rj-2c-embedded #rjq-message-preview {display:none!important}
   new MutationObserver(sync).observe(counter,{childList:true,subtree:true,characterData:true});
   // srcdoc is loaded fresh on the first arrival and every subsequent return to 2C.
   sync();
+})();
+</script>
+
+
+<!-- Dave 2026-11-19: Restore touch swipes on the embedded STIXMAX 2C flyer only. -->
+<script id="rj-dave-2c-iframe-swipe-bridge">
+(function(){
+  'use strict';
+  const frame=document.getElementById('rj-stixmax-2c-in-catalogue');
+  const count=document.getElementById('count');
+  if(!frame||!count)return;
+  const onPage2c=()=>/\bPAGE\s+2C\s*\//i.test(count.textContent||'');
+  frame.addEventListener('load',function(){
+    let doc;
+    try{doc=frame.contentDocument}catch(e){return}
+    if(!doc||doc.__rjDave2cSwipeInstalled)return;
+    doc.__rjDave2cSwipeInstalled=true;
+    let start=null;
+    doc.addEventListener('touchstart',function(e){
+      start=null;
+      if(!onPage2c()||e.touches.length!==1)return;
+      // A product button or an open quote sheet must retain its normal touch behaviour.
+      const t=e.target;
+      if(t&&t.closest&&t.closest('button,a,input,select,textarea,[role="dialog"]'))return;
+      const p=e.touches[0];start={x:p.clientX,y:p.clientY};
+    },{passive:true});
+    doc.addEventListener('touchend',function(e){
+      if(!start||!onPage2c()||e.changedTouches.length!==1){start=null;return}
+      const p=e.changedTouches[0],dx=p.clientX-start.x,dy=p.clientY-start.y;
+      start=null;
+      if(Math.abs(dx)<58||Math.abs(dx)<Math.abs(dy)*1.4)return;
+      const target=document.getElementById(dx<0?'next':'prev');
+      if(target&&!target.disabled)target.click();
+    },{passive:true});
+    doc.addEventListener('touchcancel',()=>{start=null},{passive:true});
+  });
 })();
 </script>
 
